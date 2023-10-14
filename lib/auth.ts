@@ -32,6 +32,7 @@ const fetchAccessToken = async (
       ).toString('base64')}`,
     },
     body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
+    cache: 'no-cache',
   });
 
   if (request.ok) {
