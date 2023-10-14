@@ -1,19 +1,24 @@
-import { getServerSession } from 'next-auth';
-
 import { LoginButton, LogoutButton } from 'components/buttonts';
 
-import { authOptions } from 'lib/auth';
+import { getSpotifyClient } from 'lib/spotify';
 
 export default async function Home() {
-  const session = await getServerSession(authOptions);
+  const spotify = await getSpotifyClient();
+
+  const topArtists = await spotify?.getTopArtists(2);
+
+  const topTracks = await spotify?.getTopTracks(2);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div>
-        {session?.user ? <LogoutButton /> : <LoginButton />}
+        {spotify?.token ? <LogoutButton /> : <LoginButton />}
 
         <h1>Server Session</h1>
-        <pre>{JSON.stringify(session)}</pre>
+        <div>
+          <pre>{JSON.stringify(topArtists, null, 2)}</pre>
+          <pre>{JSON.stringify(topTracks, null, 2)}</pre>
+        </div>
       </div>
     </main>
   );
