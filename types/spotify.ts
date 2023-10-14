@@ -8,7 +8,7 @@ export interface TopArtistsResponse {
   items: ArtistItem[];
 }
 
-interface ArtistItem {
+export interface ArtistItem {
   external_urls: ExternalUrls;
   followers: Followers;
   genres: string[];
@@ -46,9 +46,9 @@ export interface TopTracksResponse {
   items: TrackItem[];
 }
 
-interface TrackItem {
+export interface TrackItem {
   album: Album;
-  artists: Artist2[];
+  artists: Artist[];
   available_markets: string[];
   disc_number: number;
   duration_ms: number;
@@ -66,7 +66,7 @@ interface TrackItem {
   is_local: boolean;
 }
 
-export interface Album {
+interface Album {
   album_type: string;
   total_tracks: number;
   available_markets: string[];
@@ -93,15 +93,6 @@ interface Artist {
 
 interface ExternalUrls2 {
   spotify: string;
-}
-
-interface Artist2 {
-  external_urls: ExternalUrls3;
-  href: string;
-  id: string;
-  name: string;
-  type: string;
-  uri: string;
 }
 
 interface ExternalUrls3 {
