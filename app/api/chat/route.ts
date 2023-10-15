@@ -74,6 +74,7 @@ export async function POST(req: Request) {
         messages: [...messages, ...newMessages],
         stream: true,
         model: 'gpt-3.5-turbo-0613',
+        functions,
       });
     },
   });
