@@ -5,7 +5,7 @@ import OpenAI from 'openai';
 
 import prisma from 'lib/prisma';
 import { checkRateLimit } from 'lib/ratelimit';
-import { getSpotifyClient } from 'lib/spotify';
+import { getSpotifyClient, reccomendationOptions } from 'lib/spotify';
 
 interface OpenAIFunction {
   name: string;
@@ -48,6 +48,15 @@ const functions: OpenAIFunction[] = [
       type: 'object',
       properties: topProperties,
       required: ['limit', 'offset'],
+    },
+  },
+  {
+    name: 'get_reccomendations',
+    description:
+      'Recommendations are generated based on the available information for a given seed entity and matched against similar artists and tracks. If there is sufficient information about the provided seeds, a list of tracks will be returned together with pool size details.',
+    parameters: {
+      type: 'object',
+      properties: reccomendationOptions,
     },
   },
 ];
@@ -134,6 +143,10 @@ const runFunction = async (name: string, args: Record<string, unknown>) => {
       });
     case 'get_top_tracks':
       return await spotify?.getTopTracks({
+        ...args,
+      });
+    case 'get_reccomendations':
+      return await spotify?.getRecommendations({
         ...args,
       });
     default:
