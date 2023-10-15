@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import OpenAI from 'openai';
 
 import prisma from 'lib/prisma';
+import { checkRateLimit } from 'lib/ratelimit';
 import { getSpotifyClient } from 'lib/spotify';
 
 interface OpenAIFunction {
@@ -56,10 +57,16 @@ const openai = new OpenAI({
 });
 
 export async function POST(req: Request) {
+  const rateLimitResult = await checkRateLimit(req, 10, '1h');
+
+  if (rateLimitResult.response) {
+    return rateLimitResult.response;
+  }
+
   const { messages, userId } = await req.json();
 
   const response = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-3.5-turbo-16k',
     stream: true,
     messages,
     functions,

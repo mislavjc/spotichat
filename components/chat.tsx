@@ -7,11 +7,13 @@ import { Session } from 'next-auth';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 
+import { Button } from 'ui/button';
+import { Textarea } from 'ui/textarea';
+import { toast } from 'ui/use-toast';
+
 import { useAutoScroll } from 'hooks/use-auto-scroll';
 import { useEnterSubmit } from 'hooks/use-enter-submit';
 
-import { Button } from './ui/button';
-import { Textarea } from './ui/textarea';
 import { MemoizedReactMarkdown } from './markdown';
 
 interface Props {
@@ -24,6 +26,13 @@ export const Chat = ({ initialMessages, user }: Props) => {
     initialMessages,
     body: {
       userId: user?.id,
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
+      });
     },
   });
 
