@@ -11,6 +11,11 @@ const Home = async () => {
   const chat = await prisma.message.findMany({
     where: {
       userId: user?.id ?? undefined,
+      AND: {
+        role: {
+          not: 'function',
+        },
+      },
     },
   });
 

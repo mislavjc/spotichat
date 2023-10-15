@@ -1,3 +1,4 @@
+import { MessageRole } from '@prisma/client';
 import { OpenAIStream, StreamingTextResponse } from 'ai';
 import { revalidatePath } from 'next/cache';
 import OpenAI from 'openai';
@@ -91,10 +92,20 @@ export async function POST(req: Request) {
       revalidatePath('/', 'page');
     },
     onCompletion: async (completion) => {
+      let role: MessageRole = 'assistant';
+
+      try {
+        const parsedCompletion = JSON.parse(completion);
+
+        if (parsedCompletion.function_call) {
+          role = 'function';
+        }
+      } catch (err) {}
+
       await prisma.message.create({
         data: {
           content: completion,
-          role: 'assistant',
+          role,
           userId,
         },
       });
