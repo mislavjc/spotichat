@@ -1,6 +1,8 @@
 import { OpenAIStream, StreamingTextResponse } from 'ai';
+import { revalidatePath } from 'next/cache';
 import OpenAI from 'openai';
 
+import prisma from 'lib/prisma';
 import { getSpotifyClient } from 'lib/spotify';
 
 interface OpenAIFunction {
@@ -53,7 +55,7 @@ const openai = new OpenAI({
 });
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const { messages, userId } = await req.json();
 
   const response = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
@@ -76,6 +78,28 @@ export async function POST(req: Request) {
         model: 'gpt-3.5-turbo-0613',
         functions,
       });
+    },
+    onStart: async () => {
+      await prisma.message.create({
+        data: {
+          content: messages[messages.length - 1].content,
+          role: 'user',
+          userId,
+        },
+      });
+
+      revalidatePath('/', 'page');
+    },
+    onCompletion: async (completion) => {
+      await prisma.message.create({
+        data: {
+          content: completion,
+          role: 'assistant',
+          userId,
+        },
+      });
+
+      revalidatePath('/', 'page');
     },
   });
 

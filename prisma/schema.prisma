@@ -44,6 +44,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  message       Message[]
 }
 
 model VerificationToken {
@@ -52,4 +53,23 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  role    MessageRole @default(user)
+  content String      @db.VarChar(5000)
+  userId  String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum MessageRole {
+  user
+  system
+  assistant
+  function
 }

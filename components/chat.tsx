@@ -1,7 +1,9 @@
 'use client';
 
+import { Message } from '@prisma/client';
 import { useChat } from 'ai/react';
 import { CornerDownLeft } from 'lucide-react';
+import { Session } from 'next-auth';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 
@@ -12,8 +14,18 @@ import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import { MemoizedReactMarkdown } from './markdown';
 
-export const Chat = () => {
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
+interface Props {
+  initialMessages: Message[];
+  user: Session | null;
+}
+
+export const Chat = ({ initialMessages, user }: Props) => {
+  const { messages, input, handleInputChange, handleSubmit } = useChat({
+    initialMessages,
+    body: {
+      userId: user?.id,
+    },
+  });
 
   const { formRef, onKeyDown } = useEnterSubmit();
   const messagesEndRef = useAutoScroll([messages]);
@@ -21,7 +33,7 @@ export const Chat = () => {
   return (
     <main className="relative mx-auto flex min-h-screen w-full max-w-screen-md flex-col p-8">
       <div>
-        <div className="mb-20 flex flex-col gap-8">
+        <div className="mb-20 flex flex-col gap-4">
           {messages.map((m) => (
             <div
               key={m.id}
