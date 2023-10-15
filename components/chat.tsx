@@ -5,6 +5,7 @@ import { CornerDownLeft } from 'lucide-react';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 
+import { useAutoScroll } from 'hooks/use-auto-scroll';
 import { useEnterSubmit } from 'hooks/use-enter-submit';
 
 import { Button } from './ui/button';
@@ -15,6 +16,7 @@ export const Chat = () => {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
 
   const { formRef, onKeyDown } = useEnterSubmit();
+  const messagesEndRef = useAutoScroll([messages]);
 
   return (
     <main className="relative mx-auto flex min-h-screen w-full max-w-screen-md flex-col p-8">
@@ -30,7 +32,7 @@ export const Chat = () => {
               <div
                 className={`${
                   m.role === 'user' ? 'bg-green-500 text-white' : 'bg-gray-100'
-                } rounded-md px-4 py-2`}
+                } max-w-full overflow-hidden rounded-md px-4 py-2`}
               >
                 <MemoizedReactMarkdown
                   remarkPlugins={[remarkGfm, remarkMath]}
@@ -45,6 +47,7 @@ export const Chat = () => {
               </div>
             </div>
           ))}
+          <div ref={messagesEndRef} />
         </div>
 
         <form
