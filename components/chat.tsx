@@ -52,6 +52,30 @@ export const Chat = ({ initialMessages, user }: Props) => {
                     p({ children }) {
                       return <p className="mb-2 last:mb-0">{children}</p>;
                     },
+                    a({ href, children }) {
+                      return (
+                        <a
+                          href={href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-green-500 hover:underline"
+                        >
+                          {children}
+                        </a>
+                      );
+                    },
+                    img({ src, alt }) {
+                      if (src) {
+                        return (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={src}
+                            alt={alt === undefined ? '' : alt}
+                            className="my-2 aspect-square max-h-64 w-full rounded-sm object-cover"
+                          />
+                        );
+                      }
+                    },
                   }}
                 >
                   {m.content}
