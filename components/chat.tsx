@@ -42,7 +42,7 @@ export const Chat = ({ initialMessages, user }: Props) => {
   return (
     <main className="relative mx-auto flex min-h-screen w-full max-w-screen-md flex-col p-4">
       <div>
-        <div className="mb-20 flex flex-col gap-4">
+        <div className="mb-24 flex flex-col gap-4">
           {messages.map((m) => (
             <div
               key={m.id}
