@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import PlausibleProvider from 'next-plausible';
 
 import { Toaster } from 'ui/toaster';
 
@@ -19,6 +20,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <PlausibleProvider domain="spotichat.vercel.app" />
+      </head>
       <body className={inter.className}>
         {children}
         <Toaster />
